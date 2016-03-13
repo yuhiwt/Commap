@@ -1,0 +1,9 @@
+# Added by gemignore. Snippet 'Global/OSX'
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# build
+/build/
+/bower_components/
+/node_modules/
