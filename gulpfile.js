@@ -35,7 +35,8 @@ gulp.task('scripts', function() {
 gulp.task('cssmin', function () {
   return gulp.src([
       './bower_components/OnsenUI/css/onsenui.css',
-      './bower_components/OnsenUI/css/onsen-css-components-blue-theme.css'
+      './bower_components/OnsenUI/css/onsen-css-components-blue-theme.css',
+      './bower_components/OnsenUI/css/font_awesome/css/font-awesome.min.css'
   ])
     .pipe(concat('lib.css'))
     .pipe(cssmin())
