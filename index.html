@@ -1,17 +1,23 @@
 <!doctype html>
-<html lang="en">
+<!--<html lang="en">-->
+<html ng-app="myApp">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <title>Apps</title>  
-  <link rel="stylesheet" href="css/lib.css">  
-<!--  <link rel="stylesheet" href="styles/app.css"/>-->
   <script src="js/lib.js"></script>
+  <link rel="stylesheet" href="css/lib.css">  
+  <link rel="stylesheet" href="css/index.css">  
+<!--  <link rel="stylesheet" href="styles/app.css"/>-->
   <script src="js/index.js"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+  <script src="js/controller.js"></script>
+
 <!--  <script src="js/app.js"></script>  -->
 </head>
- 
+ <!--
 <body>
   <ons-navigator title="Navigator" var="myNavigator">
     <ons-page>
@@ -26,5 +32,10 @@
       </p>
     </ons-page>
   </ons-navigator>
-</body>  
+</body>
+-->
+    <body>
+        <ons-sliding-menu swipeable="false" var="slidingMenu" menu-page="menu.html" main-page="map.html" side="left" type="overlay" max-slide-distance="200px">
+        </ons-sliding-menu>
+    </body>  
 </html>
