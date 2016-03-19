@@ -23,6 +23,11 @@
         $scope.map;
         $scope.markers = [];
         $scope.markerId = 1;
+        $scope.msg = "";
+        var mlkurl = config.MLKCCA_VALUE+'.mlkcca.com';
+        var milkcocoa = new MilkCocoa(mlkurl);
+        // データストアを作成
+        $scope.ds = milkcocoa.dataStore('messages');
  
         //Map initialization  
         $timeout(function(){
@@ -41,11 +46,142 @@
             $scope.hammertime = Hammer($scope.element).on("hold", function(event) {
                 $scope.addOnClick(event);
             });
+
+            $scope.getMessage();
  
         },100);
+
+        $scope.insertMessage = function(obj){
+
+        };
+
+        $scope.setMessage = function(_lat, _lng, _message){
+//            console.log(_lat,_lng,_message);
+            var coord = new google.maps.LatLng(_lat, _lng);
+//            console.log(coord); 
+            var marker = new google.maps.Marker({
+                position: coord,
+                map: $scope.map
+            });
+//            console.log(marker);
+ 
+            marker.id = $scope.markerId;
+            $scope.markerId++;
+            $scope.markers.push(marker);
+
+            var infowindow = null;
+            infowindow = new google.maps.InfoWindow({
+                content:_message,
+            });
+//            console.log(infowindow);
+            infowindow.open($scope.map, marker);
+
+
+            // マーカーがクリックされた時
+            google.maps.event.addListener(marker, 'click', function() {
+                infowindow.open($scope.map, marker);
+            });
+
+ /*
+            $timeout(function(){
+                //Creation of the listener associated to the Markers click
+            google.maps.event.addListener(marker, "click", function (e) {
+                ons.notification.confirm({
+                    message: 'Do you want to delete the marker?',
+                    callback: function(idx) {
+                        switch(idx) {
+                            case 0:
+                                ons.notification.alert({
+                                    message: 'You pressed "Cancel".'
+                                });
+                                break;
+                            case 1:
+                                for (var i = 0; i < $scope.markers.length; i++) {
+                                    if ($scope.markers[i].id == marker.id) {
+                                        //Remove the marker from Map                  
+                                        $scope.markers[i].setMap(null);
+ 
+                                        //Remove the marker from array.
+                                        $scope.markers.splice(i, 1);
+                                    }
+                                }
+                                ons.notification.alert({
+                                    message: 'Marker deleted.'
+                                });
+                                break;
+                        }
+                    }
+                });
+            });
+            },1000);
+*/
+        };
+
+        $scope.getMessage = function(e){
+//            var history = milkcocoa.dataStore('message').history();
+            $scope.ds.stream().next(function(err, messages){
+//                console.log(messages);
+                for (var i = messages.length - 1; i >= 0; i--) {
+//                messages[i].value.lat
+//                messages[i].value.lng
+//                messages[i].value.message
+                $scope.setMessage(messages[i].value.lat, messages[i].value.lng, messages[i].value.message);
+            }
+
+
+            $scope.ds.on('send', function(message) {
+                $scope.setMessage(message.value.lat, message.value.lng, message.value.message);
+            });
+            
+              /*
+              messages -> [{
+                id: [String],
+                timestamp: [Number],
+                value: {
+                    title: '...',
+                    content: '...'
+                }
+              },
+              {
+                id: [String],
+                timestamp: [Number],
+                value: {
+                    title: '...',
+                    content: '...'
+                }
+              },
+              ...
+              ]
+              */
+            });
+
+        };
+
+        //Messenger
+        $scope.sendMessage = function(_message) {
+            if(_message!=""){
+                console.log(_message);
+                // titleが'hoge'、contentが'huga'というデータを送信＆保存
+                var _lat = $scope.map.getCenter().lat() + Math.random()*0.001 - 0.0005;
+                var _lng = $scope.map.getCenter().lng() + Math.random()*0.001 - 0.0005;
+                var _userAgent = window.navigator.userAgent.toLowerCase();
+                var _user = [];
+                _user.push(_userAgent);
+    //            var _content = "aaa";
+    //            $scope.msg = "";
+    //            var form = document.getElementById("form");
+    //            form.value = "";
+
+    //            _content = _message;
+    //            console.log(message);
+    //            var time = new Date();
+                $scope.ds.send({lat : _lat, lng : _lng, message : _message, user : _user});
+                $scope.ds.push({lat : _lat, lng : _lng, message : _message, user : _user});
+            }
+        };
  
         //Delete all Markers
-        $scope.deleteAllMarkers = function(){
+/*        $scope.deleteAllMarkers = function(){
  
             if($scope.markers.length == 0){
                 ons.notification.alert({
@@ -72,9 +208,12 @@
         $scope.rad = function(x) {
             return x * Math.PI / 180;
         };
- 
+ */
         //Calculate the distance between the Markers
-        $scope.calculateDistance = function(){
+        $scope.calculateDistance = function(event){
+
+//            console.log($scope.msg);
+            alert(JSON.stringify($scope.msg));
  
             if($scope.markers.length < 2){
                 ons.notification.alert({
@@ -181,5 +320,10 @@
  
  
         };
+
+        //Message initialize
+        $timeout(function(){
+            $scope.setMessage(35.7042995, 139.7597564,"表示テスト");
+        },200);
     });
 })();
