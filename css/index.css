@@ -7,8 +7,9 @@
     z-index: -1
 }
  
-.search-input-map{
+.text-input-map{
     width:60%;
+    height:40px;
     z-index:1;
     margin-left: auto;
     margin-right:auto;

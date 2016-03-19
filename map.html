@@ -8,18 +8,31 @@
         </ons-toolbar>
         
         <div id="map_canvas"></div>
-        
+<!--        
         <p class="par-search">
             <input type="search" class="search-input search-input-map">
         </p>
-        
+-->        
         <p class="par-buttons">
-            <ons-button  class="btn-delete" ng-click="deleteAllMarkers()">
+
+<!--            <ons-text-input 
+                ng-model="text"
+                style="display: block; width: 100%" value="OK">
+            </ons-text-input>-->
+            <input type="text" ng-model="msg" ng-maxlength="15" required class="text-input text-input-map">
+<!--            <ons-text-input ng-model="memo.text"></ons-text-input>-->
+            <ons-button id="form" ng-click="sendMessage(msg)">
+                Send
+            </ons-button>
+<!--            <div>{{msg}}</div>-->
+
+<!--            <ons-button  class="btn-delete" ng-click="deleteAllMarkers()">
                 Delete all markers        
             </ons-button>
             <ons-button class="btn-distance" ng-click="calculateDistance()">
                 Distance      
             </ons-button>
-        </p>   
+-->
+        </p>
     </ons-page>
 </ons-navigator>
