@@ -24,32 +24,52 @@
         $scope.markers = [];
         $scope.markerId = 1;
         $scope.msg = "";
+        $scope.lat = 35.7042995;
+        $scope.lng = 139.7597564;
         var mlkurl = config.MLKCCA_VALUE+'.mlkcca.com';
         var milkcocoa = new MilkCocoa(mlkurl);
         // データストアを作成
         $scope.ds = milkcocoa.dataStore('messages');
- 
-        //Map initialization  
-        $timeout(function(){
- 
-            var latlng = new google.maps.LatLng(35.7042995, 139.7597564);
-            var myOptions = {
-                zoom: 8,
-                center: latlng,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            $scope.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions); 
-            $scope.overlay = new google.maps.OverlayView();
-            $scope.overlay.draw = function() {}; // empty function required
-            $scope.overlay.setMap($scope.map);
-            $scope.element = document.getElementById('map_canvas');
-            $scope.hammertime = Hammer($scope.element).on("hold", function(event) {
-                $scope.addOnClick(event);
-            });
 
-            $scope.getMessage();
+        // 位置情報を取得
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(pos){
+                $scope.lat = pos.coords.latitude;
+                $scope.lng = pos.coords.longitude;
+                $scope.initMap(14);
+            },
+            function(error){
+                console.log("位置情報取得エラー : "+error);
+                $scope.initMap(8);
+            });
+        }
+
+
+        $scope.initMap = function(_zoom){
  
-        },100);
+            //Map initialization  
+            $timeout(function(){
+     
+                var latlng = new google.maps.LatLng($scope.lat, $scope.lng);
+                var myOptions = {
+                    zoom: _zoom,
+                    center: latlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                $scope.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions); 
+                $scope.overlay = new google.maps.OverlayView();
+                $scope.overlay.draw = function() {}; // empty function required
+                $scope.overlay.setMap($scope.map);
+                $scope.element = document.getElementById('map_canvas');
+                $scope.hammertime = Hammer($scope.element).on("hold", function(event) {
+                    $scope.addOnClick(event);
+                });
+
+                $scope.getMessage();
+     
+            },100);
+
+        };
 
         $scope.insertMessage = function(obj){
 
@@ -322,8 +342,8 @@
         };
 
         //Message initialize
-        $timeout(function(){
+/*        $timeout(function(){
             $scope.setMessage(35.7042995, 139.7597564,"表示テスト");
-        },200);
+        },200);*/
     });
 })();
